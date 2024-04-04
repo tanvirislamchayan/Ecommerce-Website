@@ -35,11 +35,11 @@
               <li class="nav-item {% if request.path == '/' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
               </li>
-              <li class="nav-item {% if '/product/' in request.path %}active{% endif %}">
+              <li class="nav-item {% if '/products/' in request.path %}active{% endif %}">
                   <a class="nav-link" href="{% url 'product' %}">Shop</a>
               </li>
-              <li class="nav-item {% if '/about/' in request.path %}active{% endif %}">
-                  <a class="nav-link" href="#">About us</a>
+              <li class="nav-item {% if '/about-us/' in request.path %}active{% endif %}">
+                  <a class="nav-link" href="{% url 'about' %}">About us</a>
               </li>
               <li class="nav-item {% if '/services/' in request.path %}active{% endif %}">
                   <a class="nav-link" href="#">Services</a>
@@ -47,19 +47,42 @@
               <li class="nav-item {% if '/blog/' in request.path %}active{% endif %}">
                   <a class="nav-link" href="#">Blog</a>
               </li>
-              <li class="nav-item {% if '/contact/' in request.path %}active{% endif %}">
-                  <a class="nav-link" href="#">Contact us</a>
+              <li class="nav-item {% if '/contact-us/' in request.path %}active{% endif %}">
+                  <a class="nav-link" href="{% url 'contact' %}">Contact us</a>
               </li>
           </ul>
       
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
               <li><a class="nav-link" href="#"><img src="{% static 'images/user.svg' %}"></a></li>
-              <li><a class="nav-link" href="#"><img src="{% static 'images/cart.svg' %}"></a></li>
+              <li><a class="nav-link" href="{% url 'cart' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
           </ul>
       </div>
       
 				
 		</nav>
+
+
+{% if '/products/' not in request.path %}
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>{{page}}</h1>
+                    <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+                    <p><a href="{% url 'product' %}" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="hero-img-wrap">
+                    <img src="{% static 'images/couch.png' %}" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 
 {% block start %}
 
