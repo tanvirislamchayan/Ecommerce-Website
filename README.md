@@ -12,20 +12,20 @@
 * Inside the `settings.py` file create host by using 
 `ALLOWED_HOSTS = ['.vercel.app']`
 
-![](image.png)
+![](docs/image.png)
 
 * Create a `requirements.txt` file by using `pip freeze > requirements.txt`
 * Create a `.json` file. Ex - `vercel.json`
 
-![](image-1.png)
+![](docs/image-1.png)
 
 * vercel.json -
 
-![](image-2.png)
+![](docs/image-2.png)
 
 * wsgi.py file - 
 
-![alt text](image-3.png)
+![alt text](docs/image-3.png)
 
 
-# Over View
+# Over View# django-ecommerce
