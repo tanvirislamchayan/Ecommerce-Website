@@ -8,4 +8,24 @@
 * Start/Create Project - `django-admin startproject [project_name]`
 * Go to the project directory - `cd [project_name]` or `cd ./[project_name]`
 
+# Setup for vercel -
+* Inside the `settings.py` file create host by using 
+`ALLOWED_HOSTS = ['.vercel.app']`
+
+![](image.png)
+
+* Create a `requirements.txt` file by using `pip freeze > requirements.txt`
+* Create a `.json` file. Ex - `vercel.json`
+
+![](image-1.png)
+
+* vercel.json -
+
+![](image-2.png)
+
+* wsgi.py file - 
+
+![alt text](image-3.png)
+
+
 # Over View
