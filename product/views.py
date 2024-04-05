@@ -19,3 +19,12 @@ def cart(request):
         'page': page,
     }
     return render(request, 'product/cart.html', context=context)
+
+
+
+def checkout(request):
+    page = 'Checkout | Django'
+    context = {
+        'page': page
+    }
+    return render(request, 'product/checkout.html', context)
