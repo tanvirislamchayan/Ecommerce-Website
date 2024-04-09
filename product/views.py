@@ -28,3 +28,11 @@ def checkout(request):
         'page': page
     }
     return render(request, 'product/checkout.html', context)
+
+
+def detail(request):
+    page = 'Detail | Django'
+    context = {
+        'page': page
+    }
+    return render(request, 'product/detail.html', context=context)

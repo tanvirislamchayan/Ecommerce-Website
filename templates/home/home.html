@@ -21,14 +21,20 @@
 
             <!-- Start Column 2 -->
             <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                <a class="product-item" href="cart.html">
-                    <img src="{% static 'images/product-1.png' %}" class="img-fluid product-thumbnail" alt="Example Image">
-                    <h3 class="product-title">Nordic Chair</h3>
-                    <strong class="product-price">$50.00</strong>
-                    <span class="icon-cross">
-                        <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Example Image">
-                    </span>
-                </a>
+                <div class="product-item">
+                    <a href="{% url 'detail' %}">
+                        <img src="{% static 'images/product-1.png' %}" class="img-fluid product-thumbnail" alt="Example Image">
+                        <h3 class="product-title">Nordic Chair</h3>
+                        <strong class="product-price">$50.00</strong>
+                    </a>
+
+                    <a href="{% url 'cart' %}">
+                        <span class="icon-cross">
+                            <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Example Image">
+                        </span>
+                    </a>
+                </div>
+                
             </div>
             <!-- End Column 2 -->
 

@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block start %}
+
+<div class="container">
+    <div class="row m-2">
+
+        <div class="product-image col-6">
+            <div class="image-main-div border-right shadow-sm p-3 mb-1 bg-body rounded ">
+                <div class="main-image">
+                    <img src="{% static 'images/product-1.png' %}" alt="product-1">
+                </div>
+            </div>
+            <div class="image-sub-div d-flex justify-content-around">
+                <div class="sub-image   w-25  border shadow-sm p-3 mb-3 bg-body rounded">
+                    <img class="w-100" src="{% static 'images/product-1.png' %}" alt="product-1">
+                </div>
+                <div class="sub-image w-25 border shadow-sm p-3 mb-3 bg-body rounded">
+                    <img class="w-100" src="{% static 'images/product-1.png' %}" alt="product-1">
+                </div>
+                <div class="sub-image border w-25 shadow-sm p-3 mb-3 bg-body rounded">
+                    <img class="w-100" src="{% static 'images/product-1.png' %}" alt="product-1">
+                </div>
+            </div>
+        </div>
+        <div class="col-6 detail">
+            <div class="px-5 py-5">
+                <h1 class="text-black">Name</h1>
+                <h4>Category</h4>
+                <h4 class="fw-light">price</h4>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum animi veniam soluta tempore maiores dolorum ab facilis enim modi a, ratione, id dolore beatae, illum non corrupti quidem? Atque, nobis.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
