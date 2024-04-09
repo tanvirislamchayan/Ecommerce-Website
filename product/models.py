@@ -14,6 +14,7 @@ class Category(BaseModel):
 
     category_name = models.CharField(max_length=100)
     category_image = models.ImageField(upload_to='Categories')
+    slug = models.SlugField(unique=True, null=True, blank=True) #slug will help to get linking like this "Poduct Image => product-image"
 
 
 
@@ -26,6 +27,7 @@ class Products(BaseModel):
     product_category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     product_price = models.IntegerField()
     product_description = models.TextField()
+    slug = models.SlugField(unique=True, null=True, blank=True)
 
 
 
