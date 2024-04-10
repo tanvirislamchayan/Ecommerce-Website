@@ -1,10 +1,27 @@
 from django.shortcuts import render
 from django.contrib import messages #this will show messages on html
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
+from .models import Profile
+from django.contrib.auth import authenticate, login as auth_login  # Renamed login function
+
+
+
+
+
+def activate_email(request, email_token):
+    try:
+        user = Profile.objects.get(email_token=email_token)
+        user.is_email_verified = True
+        user.save()
+        messages.success(request, f'Hello, Your account has been varified successfully!')
+        return redirect(reverse('login'))  # Assuming 'login' is the name of your login URL pattern
+    except Profile.DoesNotExist:
+        return HttpResponse("Invalid email Token")
+
 
 
 """Login"""
@@ -20,26 +37,27 @@ def login(request):
 
         #check user if not exists
         if not user_obj.exists():
-            messages.error(request, f'Invalid Username')
+            messages.warning(request, f'Invalid Username')
         
         #if user exists 
         elif user_obj.exists():
             #check if account is not varified
-            if not user_obj[0].is_email_verified:
-                messages.error(request, f'Hello Mr./Mst. {user_obj[0].first_name}. Your account is not varified. Please check your email and varify Your account.')
+            if not user_obj[0].profile.is_email_verified:
+                messages.warning(request, f'Hello Mr./Mst. {user_obj[0].first_name}. Your account is not varified. Please check your email and varify Your account.')
                 return HttpResponseRedirect(request.path_info) 
             
             #if account is varified
-            elif user_obj[0].is_email_verified:
+            elif user_obj[0].profile.is_email_verified:
                 #check if user authenticated (password)
                 user_auth = authenticate(username=email, password=password)
                 #if true
-                if user_auth:
-                    login(request, user_auth)
+                if user_auth is not None:
+                    auth_login(request, user_auth)
                     return redirect(reverse('home'))
+
                 #if False
                 else:
-                    messages.error(request, f'Invalid Password')
+                    messages.warning(request, f'Invalid Password')
                     return HttpResponseRedirect(request.path_info)
             
 
@@ -88,3 +106,18 @@ def signup(request):
         'page': page
     }
     return render(request, 'account/login.html', context=context)
+
+
+
+def profile(request):
+    page = 'Profile | Django'
+    context = {
+        'page': page,
+    }
+    return render(request, "account/profile.html", context)
+
+
+
+def logout_user(request):
+    logout(request)
+    return redirect(reverse('home'))

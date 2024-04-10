@@ -17,13 +17,14 @@
 		<link href="{% static 'css/style.css' %}" rel="stylesheet">
 		<link href="{% static 'css/login.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 		<title>{{ page }} </title>
 	</head>
 
 	<body>
 
 		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Django navigation bar">
 
 			<div class="container">
 				<a class="navbar-brand" href="{% url 'home' %}">Django<span>.</span></a>
@@ -55,12 +56,30 @@
           </ul>
       
           <ul class="custom-navbar-nav navbar-nav mb-2 mb-md-0 ms-5">
-              <li class="nav-item {% if '/login/' in request.path or '/sign-up/' in request.path %}active{% endif %}">
-                  <a class="nav-link" href="{% url 'login' %}">Login/Sign up</a>
+            {% if user.is_authenticated %}
+              {% if user.is_superuser %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'admin:index' %}">
+                        <i style="font-size: 50px;" class="fa-brands fa-cpanel"></i>
+                      </a>
+                  </li>
+              {% else %}
+                  <li class="nav-item {% if '/profile/' in request.path or '/sign-up/' in request.path %}active{% endif %}">
+                      <a class="nav-link" href="{% url 'profile' %}">
+                          <img src="{% static 'images/user.svg' %}">
+                      </a>
+                  </li>
+              {% endif %}
+          {% else %}
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}">
+                    <img src="{% static 'images/user.svg' %}">
+                  </a>
               </li>
-              <li><a class="nav-link" href="">
-                  <img src="{% static 'images/user.svg' %}"></a>
-              </li>
+          {% endif %}
+        
+              
+
               <li class="nav-item {% if '/show-cart/' in request.path %}active{% endif %}">
                   <a class="nav-link" href="{% url 'cart' %}"><img src="{% static 'images/cart.svg' %}"></a>
               </li>
@@ -71,7 +90,7 @@
 		</nav>
 
 
-{% if '/products/' not in request.path and '/sign-up/' not in request.path and '/login/' not in request.path %}
+{% if '/products/' not in request.path and '/sign-up/' not in request.path and '/login/' not in request.path and '/profile/' not in request.path %}
 <div class="hero">
     <div class="container">
         <div class="row justify-content-between">
