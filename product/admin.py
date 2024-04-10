@@ -14,3 +14,5 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageAdmin]
 
 admin.site.register(Products, ProductAdmin)
+admin.site.register(SizeVariants)
+admin.site.register(ColorVariants)

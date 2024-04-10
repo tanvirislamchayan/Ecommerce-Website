@@ -26,6 +26,20 @@ class Category(BaseModel):
 
 
 
+""" Color variants """
+class ColorVariants(BaseModel):
+    color_name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.color_name
+
+
+class SizeVariants(BaseModel):
+    size_name = models.CharField(max_length=20)
+
+    def __str__(self) -> str:
+        return self.size_name
+
 
 """Another class product where we will save products and it must pass category on this"""
 class Products(BaseModel):
@@ -36,6 +50,8 @@ class Products(BaseModel):
     product_price = models.IntegerField()
     product_description = models.TextField()
     slug = models.SlugField(unique=True, null=True, blank=True)
+    color_variant = models.ManyToManyField(ColorVariants, blank=True)
+    size_variant = models.ManyToManyField(SizeVariants, blank=True)
 
 
     def save(self, *args, **kwargs):

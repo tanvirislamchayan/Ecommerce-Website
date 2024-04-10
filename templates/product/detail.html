@@ -30,6 +30,49 @@
 
                 <p class="mt-5"> {{ product.product_description }} </p>
             </div>
+
+            <div class="row px-5 py-1">
+                <div class="col-6">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" id="">
+                </div>
+                {% if product.size_variant.all %}
+                <div class="col-6" >
+                    <h6> Select Size</h6>
+                    {% for size in product.size_variant.all %}
+                    <div class="form-check form-check-inline">
+                        {% if forloop.first %}
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ size.size_name }}" checked>
+                        {% else %}
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ size.size_name }}">
+                        {% endif %}
+                        <label class="form-check-label" for="inlineRadio{{ forloop.counter }}"> {{ size.size_name }} </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+
+            {% if product.color_variant.all %}
+            <div class="px-5">
+                <h6> Select Color</h6>
+                {% for color in product.color_variant.all %}
+                <div class="form-check form-check-inline">
+                    {% if forloop.first %}
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ color.color_name }}" checked>
+                    {% else %}
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ color.color_name }}">
+                    {% endif %}
+                    <label class="form-check-label" for="inlineRadio{{ forloop.counter }}"> {{ color.color_name }} </label>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            
+            
+            
         </div>
     </div>
 </div>
