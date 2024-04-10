@@ -131,28 +131,19 @@ a {
       left: -20px; }
       @media (min-width: 768px) {
         .hero .hero-img-wrap img {
-          right: -0px;
-          left: -100px;
-        }
-      }
-      
+          right: 0px;
+          left: -100px; } }
       @media (min-width: 992px) {
         .hero .hero-img-wrap img {
           left: 0px;
           top: -80px;
           position: absolute;
-          right: -50px;
-        }
-      }
-      
+          right: -50px; } }
       @media (min-width: 1200px) {
         .hero .hero-img-wrap img {
           left: 0px;
           top: -80px;
-          right: -100px;
-        }
-      }
-      
+          right: -100px; } }
     .hero .hero-img-wrap:after {
       content: "";
       position: absolute;

@@ -19,50 +19,27 @@
             </div>
             <!-- End Column 1 -->
 
-            <!-- Start Column 2 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                <div class="product-item">
-                    <a href="{% url 'detail' %}">
-                        <img src="{% static 'images/product-1.png' %}" class="img-fluid product-thumbnail" alt="Example Image">
-                        <h3 class="product-title">Nordic Chair</h3>
-                        <strong class="product-price">$50.00</strong>
-                    </a>
+
+            {% for product in products %}
+            <div class=" col-12 h-50 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <div class="shadow-sm p-3 mb-5 rounded product-item">
+                    <div class="overflow-hidden">
+                        <a href="{% url 'detail' product.slug %}">
+                            <img style="max-height: 300px;" src="/media/{{ product.product_images.first.images }}" class="img-fluid product-thumbnail bg-removal" alt="{{ product.name }}">
+                            <h3 class="product-title">{{ product.product_name }}</h3>
+                            <strong class="product-price">TK-{{ product.product_price }}</strong>
+                        </a>
+                    </div>
 
                     <a href="{% url 'cart' %}">
                         <span class="icon-cross">
-                            <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Example Image">
+                            <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Remove from Cart">
                         </span>
                     </a>
                 </div>
-                
             </div>
-            <!-- End Column 2 -->
+            {% endfor %}
 
-            <!-- Start Column 3 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                <a class="product-item" href="cart.html">
-                    <img src="{% static 'images/product-2.png' %}" class="img-fluid product-thumbnail" alt="Example Image">
-                    <h3 class="product-title">Kruzo Aero Chair</h3>
-                    <strong class="product-price">$78.00</strong>
-                    <span class="icon-cross">
-                        <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Example Image">
-                    </span>
-                </a>
-            </div>
-            <!-- End Column 3 -->
-
-            <!-- Start Column 4 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                <a class="product-item" href="cart.html">
-                    <img src="{% static 'images/product-3.png' %}" class="img-fluid product-thumbnail" alt="Example Image">
-                    <h3 class="product-title">Ergonomic Chair</h3>
-                    <strong class="product-price">$43.00</strong>
-                    <span class="icon-cross">
-                        <img src="{% static 'images/cross.svg' %}" class="img-fluid" alt="Example Image">
-                    </span>
-                </a>
-            </div>
-            <!-- End Column 4 -->
 
         </div>
     </div>
@@ -346,6 +323,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Wait for the document to be fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all images with class 'bg-removal'
+        var images = document.querySelectorAll('.bg-removal');
+
+        // Loop through each image
+        images.forEach(function (img) {
+            // Load image using CamanJS
+            Caman(img, function () {
+                // Apply background removal filter (replace with your specific CamanJS code)
+                this.removal();
+                // Render changes
+                this.render();
+            });
+        });
+    });
+</script>
+
 <!-- End Blog Section -->
 
 {% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from base.models import BaseModel #Imported the base model just created on base app it 
+from django.utils.text import slugify #It will be used to generate slug
 
 
 
@@ -10,11 +11,18 @@ from base.models import BaseModel #Imported the base model just created on base 
 Every product has a category so we must declear a category for that product"""
 
 class Category(BaseModel):
-
-
     category_name = models.CharField(max_length=100)
     category_image = models.ImageField(upload_to='Categories')
     slug = models.SlugField(unique=True, null=True, blank=True) #slug will help to get linking like this "Poduct Image => product-image"
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.category_name)
+        super(Category, self).save(*args, **kwargs)
+
+
+    def __str__(self) -> str:
+        return self.category_name
 
 
 
@@ -28,6 +36,14 @@ class Products(BaseModel):
     product_price = models.IntegerField()
     product_description = models.TextField()
     slug = models.SlugField(unique=True, null=True, blank=True)
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.product_name)
+        super(Products, self).save(*args, **kwargs)
+    
+    def __str__(self) -> str:
+        return self.product_name
 
 
 

@@ -1,13 +1,16 @@
 from django.shortcuts import render
-
-# Create your views here.
+from product.models import *
 
 def home(request):
+    products = Products.objects.all().order_by('-create_at')[:3]  # Retrieve the last three products based on their creation timestamps
+
     page = 'Home | Django'
     context = {
         'page': page,
+        'products': products
     }
     return render(request, 'home/home.html', context)
+
 
 
 def contact(request):
