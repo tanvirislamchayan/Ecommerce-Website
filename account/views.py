@@ -135,31 +135,47 @@ def cart(request):
     }
     return render(request, 'product/cart.html', context=context)
 
-
 def add_cart(request, uid):
     product = get_object_or_404(Products, uid=uid)
-    user = request.user
-    cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+    
+    if request.user.is_authenticated:
+        user = request.user
+        cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+        size = request.GET.get('size')
+        color = request.GET.get('color')
+        
+        size_variant = None
+        color_variant = None
+        
+        if size is not None:
+            try:
+                size_variant = SizeVariants.objects.get(size_name=size)
+            except SizeVariants.DoesNotExist:
+                pass  # Handle the case where the size variant does not exist
+        
+        if color is not None:
+            try:
+                color_variant = ColorVariants.objects.get(color_name=color)
+            except ColorVariants.DoesNotExist:
+                pass  # Handle the case where the color variant does not exist
 
-    size = request.GET.get('size')
-    color = request.GET.get('color')
-    size_variant = SizeVariants.objects.get(size_name = size)
-    color_variant = ColorVariants.objects.get(color_name=color)
+        cart_item, created = CartItems.objects.get_or_create(
+            cart=cart,
+            product=product,
+            color_variant=color_variant,
+            size_variant=size_variant
+        )
 
-    cart_item, created = CartItems.objects.get_or_create(
-        cart=cart,
-        product=product,
-        color_variant=color_variant,
-        size_variant=size_variant
-    )
+        redirect_url = reverse('detail', kwargs={'slug': product.slug})
+        redirect_url += f'?size={size}&color={color}'
 
-    redirect_url = reverse('detail', kwargs={'slug': product.slug})
-    redirect_url += f'?size={size}&color={color}'
+        user_name = request.user.get_full_name() if request.user.is_authenticated else "Guest"
+        if created:
+            messages.success(request, f'Hello, {user_name}! Your selected Product: {product.product_name}, with Size: {size}, and Color: {color} has been added to the cart successfully!')
+        else:
+            messages.warning(request, f'Hello, {user_name}! Your selected Product variant already exists in your cart.')
 
-    user_name = request.user.get_full_name() if request.user.is_authenticated else "Guest"
-    if created:
-        messages.success(request, f'Hello, {user_name}! Your selected Product: {product.product_name}, with Size: {size}, and Color: {color} has been added to the cart successfully!')
+        return redirect(redirect_url)
     else:
-        messages.warning(request, f'Hello, {user_name}! Your selected Product variant already exists in your cart.')
-
-    return redirect(redirect_url)
+        messages.warning(request, f'Invalid User. Please Login or Signup first')
+        return redirect(reverse('login'))
