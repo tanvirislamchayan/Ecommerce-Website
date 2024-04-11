@@ -19,12 +19,7 @@ def product(request):
 
 
 
-def cart(request):
-    page = 'Cart | Django e-Com'
-    context = {
-        'page': page,
-    }
-    return render(request, 'product/cart.html', context=context)
+
 
 
 

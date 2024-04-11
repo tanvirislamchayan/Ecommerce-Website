@@ -5,6 +5,8 @@
 <div class="container">
     <div class="row m-2">
 
+        {% include "base/alert.html" %}
+
         <div class="product-image col-6">
             <div style="max-height: 50vh;" class="image-main-div border-right shadow-sm p-3 mb-1 bg-body rounded overflow-hidden ">
                 <div class="main-image">
@@ -85,10 +87,18 @@
             </div>
             {% endif %}
             
-            
+            <div class="row mt-3">
+                <div class="col-6 text-center">
+                    <a href="{% url 'add_cart' product.uid %}?size={{ selected_size }}&color={{selected_color}} " class="btn btn-outline-primary">Add to cart</a>
+                </div> 
+                <div class="col-6 text-center">
+                    <button class="btn" type="submit">Order Now</button>
+                </div>
+            </div>
             
             
         </div>
+        
     </div>
 </div>
 
@@ -109,6 +119,8 @@ function get_color(color) {
     window.location.href = currentUrl + '?' + params.toString();
     console.log(color)
 }
+
+
 
 </script>
 

@@ -4,6 +4,7 @@ from base.models import BaseModel
 from base.emails import send_email_activation_mail
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from product.models import *
 import uuid
 
 
@@ -30,3 +31,15 @@ def send_email_verification(sender, instance, created, **kwargs):
 
     except Exception as e:
         print(e)
+
+
+class Cart(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    is_paid = models.BooleanField(default=False)
+
+
+class CartItems(BaseModel):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True, blank=True)
+    color_variant = models.ForeignKey(ColorVariants,on_delete=models.SET_NULL, null=True, blank=True)
+    size_variant = models.ForeignKey(SizeVariants, on_delete=models.SET_NULL,null=True, blank=True)

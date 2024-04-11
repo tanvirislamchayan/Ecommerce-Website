@@ -5,8 +5,11 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, logout
-from .models import Profile
+from .models import *
+from product.models import *
 from django.contrib.auth import authenticate, login as auth_login  # Renamed login function
+from django.shortcuts import get_object_or_404
+
 
 
 
@@ -29,7 +32,7 @@ def activate_email(request, email_token):
 def login(request):
 
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.POST.get('username')
         password = request.POST.get('password') 
 
         #Get user
@@ -121,3 +124,42 @@ def profile(request):
 def logout_user(request):
     logout(request)
     return redirect(reverse('home'))
+
+
+
+
+def cart(request):
+    page = 'Cart | Django e-Com'
+    context = {
+        'page': page,
+    }
+    return render(request, 'product/cart.html', context=context)
+
+
+def add_cart(request, uid):
+    product = get_object_or_404(Products, uid=uid)
+    user = request.user
+    cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+
+    size = request.GET.get('size')
+    color = request.GET.get('color')
+    size_variant = SizeVariants.objects.get(size_name = size)
+    color_variant = ColorVariants.objects.get(color_name=color)
+
+    cart_item, created = CartItems.objects.get_or_create(
+        cart=cart,
+        product=product,
+        color_variant=color_variant,
+        size_variant=size_variant
+    )
+
+    redirect_url = reverse('detail', kwargs={'slug': product.slug})
+    redirect_url += f'?size={size}&color={color}'
+
+    user_name = request.user.get_full_name() if request.user.is_authenticated else "Guest"
+    if created:
+        messages.success(request, f'Hello, {user_name}! Your selected Product: {product.product_name}, with Size: {size}, and Color: {color} has been added to the cart successfully!')
+    else:
+        messages.warning(request, f'Hello, {user_name}! Your selected Product variant already exists in your cart.')
+
+    return redirect(redirect_url)
