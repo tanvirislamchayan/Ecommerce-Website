@@ -35,7 +35,19 @@
                                 <a href="{% url 'detail' product.slug %}">
                                   <img style="max-height: 300px;" src="/media/{{ product.product_images.first.images }}" class="img-fluid product-thumbnail bg-removal" alt="{{ product.name }}">
                                   <h3 class="product-title">{{ product.product_name }}</h3>
-                                  <strong class="product-price">TK-{{ product.product_price }}</strong>
+                                  <strong class="fw-light">
+                                    TK- 
+                                    {% if product.discount_price %}
+                
+                                       <del style="opacity: 50%;"> {{ product.product_price }} </del> {{ product.discount_price }}  
+                
+                                    {% else %}
+                
+                                        {{ product.product_price }}
+                
+                                    {% endif %}
+                
+                                </strong>
                               </a>
                           </div>
       

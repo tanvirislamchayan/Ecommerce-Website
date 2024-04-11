@@ -26,7 +26,27 @@
             <div class="px-5 py-5">
                 <h1 class="text-black">{{ product.product_name }}</h1>
                 <h4> {{ product.product_category.category_name }} </h4>
-                <h4 class="fw-light"> TK- {{ product.product_price }} </h4>
+                
+                <strong class="fw-light">
+                    TK- 
+                    {% if updated_price %}
+
+                       <del style="opacity: 50%;"> {{ product.product_price }} </del> {{ updated_price }}  
+
+                    {% else %}
+                        {% if product.discount_price %}
+
+                            <del style="opacity: 50%;"> {{ product.product_price }} </del> {{ product.discount_price }}
+
+                        {% else %}
+
+                            {{ product.product_price }}
+
+                        {% endif %}
+
+                    {% endif %}
+
+                </strong>
 
                 <p class="mt-5"> {{ product.product_description }} </p>
             </div>
@@ -37,34 +57,29 @@
                     <input type="number" name="quantity" id="">
                 </div>
                 {% if product.size_variant.all %}
-                <div class="col-6" >
-                    <h6> Select Size</h6>
-                    {% for size in product.size_variant.all %}
-                    <div class="form-check form-check-inline">
-                        {% if forloop.first %}
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ size.size_name }}" checked>
-                        {% else %}
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ size.size_name }}">
-                        {% endif %}
-                        <label class="form-check-label" for="inlineRadio{{ forloop.counter }}"> {{ size.size_name }} </label>
+                    <div class="px-5 col-6">
+                        <h6>Select Size</h6>
+                        {% for size in product.size_variant.all %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" {% if selected_size == size.size_name %} checked="" {% endif %} type="radio" onchange="get_size('{{ size.size_name }}')" value="{{ size.size_name }}" />
+                                <label class="form-check-label" for="inlineRadio{{ forloop.counter }}">{{ size.size_name }}</label>
+                            </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
                 {% endif %}
+
 
             </div>
 
             {% if product.color_variant.all %}
             <div class="px-5">
                 <h6> Select Color</h6>
+                
+
                 {% for color in product.color_variant.all %}
                 <div class="form-check form-check-inline">
-                    {% if forloop.first %}
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ color.color_name }}" checked>
-                    {% else %}
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio{{ forloop.counter }}" value="{{ color.color_name }}">
-                    {% endif %}
-                    <label class="form-check-label" for="inlineRadio{{ forloop.counter }}"> {{ color.color_name }} </label>
+                    <input class="form-check-input" onchange="get_color( '{{color.color_name}}' )" type="radio" value="{{ color.color_name }}" {% if selected_color == color.color_name %} checked="" {% endif %} >
+                    <label class="form-check-label"> {{ color.color_name }} </label>
                 </div>
                 {% endfor %}
             </div>
@@ -76,5 +91,26 @@
         </div>
     </div>
 </div>
+
+<script>
+// Function to update URL with size parameter
+function get_size(size) {
+    var currentUrl = window.location.pathname;
+    var params = new URLSearchParams(window.location.search);
+    params.set('size', size);
+    window.location.href = currentUrl + '?' + params.toString();
+}
+
+// Function to update URL with color parameter
+function get_color(color) {
+    var currentUrl = window.location.pathname;
+    var params = new URLSearchParams(window.location.search);
+    params.set('color', color);
+    window.location.href = currentUrl + '?' + params.toString();
+    console.log(color)
+}
+
+</script>
+
 
 {% endblock %}
