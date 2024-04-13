@@ -12,13 +12,13 @@ import uuid
 
 """User Class"""
 class Profile(BaseModel):
-
-
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=100, null=True, blank=True)
     profile_image = models.ImageField(upload_to='Profiles')
 
+    def get_cart_counter(self):
+        return CartItems.objects.filter(cart__is_paid=False, cart__user=self.user).count()
     
 @receiver(post_save, sender=User)
 def send_email_verification(sender, instance, created, **kwargs):
@@ -43,3 +43,4 @@ class CartItems(BaseModel):
     product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True, blank=True)
     color_variant = models.ForeignKey(ColorVariants,on_delete=models.SET_NULL, null=True, blank=True)
     size_variant = models.ForeignKey(SizeVariants, on_delete=models.SET_NULL,null=True, blank=True)
+    item_price = models.IntegerField(default=0, null=True, blank=True)

@@ -36,7 +36,7 @@ class ColorVariants(BaseModel):
 
 
     def __str__(self) -> str:
-        return f'{self.color_name} -- {self.price}'
+        return f'{self.color_name}'
 
 
 class SizeVariants(BaseModel):
@@ -47,7 +47,7 @@ class SizeVariants(BaseModel):
 
 
     def __str__(self) -> str:
-        return f'{self.size_name} -- {self.price}'
+        return f'{self.size_name}'
     
 
 

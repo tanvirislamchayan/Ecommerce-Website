@@ -127,14 +127,6 @@ def logout_user(request):
 
 
 
-
-def cart(request):
-    page = 'Cart | Django e-Com'
-    context = {
-        'page': page,
-    }
-    return render(request, 'product/cart.html', context=context)
-
 def add_cart(request, uid):
     product = get_object_or_404(Products, uid=uid)
     
@@ -143,6 +135,7 @@ def add_cart(request, uid):
         cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
         size = request.GET.get('size')
         color = request.GET.get('color')
+        price = request.GET.get('price')
         
         size_variant = None
         color_variant = None
@@ -158,12 +151,15 @@ def add_cart(request, uid):
                 color_variant = ColorVariants.objects.get(color_name=color)
             except ColorVariants.DoesNotExist:
                 pass  # Handle the case where the color variant does not exist
+        
+        
 
         cart_item, created = CartItems.objects.get_or_create(
             cart=cart,
             product=product,
             color_variant=color_variant,
-            size_variant=size_variant
+            size_variant=size_variant,
+            item_price=price
         )
 
         redirect_url = reverse('detail', kwargs={'slug': product.slug})
@@ -179,3 +175,33 @@ def add_cart(request, uid):
     else:
         messages.warning(request, f'Invalid User. Please Login or Signup first')
         return redirect(reverse('login'))
+
+
+from django.contrib import messages
+
+def cart(request):
+    # Retrieve the cart for the current user
+    cart = Cart.objects.filter(is_paid=False, user=request.user).first()
+    
+    if cart:
+        cart_items = cart.cart_items.all()
+    else:
+        messages.warning(request, 'No cart items! Please add some products to cart.')
+        return redirect(reverse('product'))
+
+    if not cart_items:  # If cart_items is empty
+        messages.warning(request, 'No items in the cart.')  # Display a message
+        return redirect(reverse('product'))  # Redirect the user
+
+    page = 'Cart | Django'
+    context = {
+        'page': page,
+        'items': cart_items,
+    }
+    return render(request, 'account/cart.html', context=context)
+
+
+def delete(request, uid):
+    cart_item = CartItems.objects.get(uid=uid)
+    cart_item.delete()
+    return redirect(reverse('cart'))

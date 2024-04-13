@@ -85,7 +85,9 @@
               <li class="nav-item {% if '/show-cart/' in request.path %}active{% endif %}">
                   <a class="nav-link" href="{% url 'cart' %}">
                     <img src="{% static 'images/cart.svg' %}">
-                    <span style="" class="position-absolute top-5 start-100 translate-middle badge p-1 bg-danger rounded-pill">4</span>
+                    {% if request.user.profile.get_cart_counter %}
+                    <span style="" class="position-absolute top-5 start-100 translate-middle badge p-1 bg-danger rounded-pill"> {{request.user.profile.get_cart_counter}} </span>
+                    {% endif %}
                   </a>
               </li>
           </ul>
@@ -95,7 +97,7 @@
 		</nav>
 
 
-{% if '/products/' not in request.path and '/sign-up/' not in request.path and '/login/' not in request.path and '/profile/' not in request.path %}
+{% if '/show-cart/' not in request.path and '/products/' not in request.path and '/sign-up/' not in request.path and '/login/' not in request.path and '/profile/' not in request.path %}
 <div class="hero">
     <div class="container">
         <div class="row justify-content-between">
@@ -107,10 +109,11 @@
                 </div>
             </div>
             <div class="col-lg-7">
-                <div class="hero-img-wrap">
+                <div class="hero-img-wrap d-none d-lg-block">
                     <img src="{% static 'images/couch.png' %}" class="img-fluid">
                 </div>
             </div>
+          
         </div>
     </div>
 </div>
