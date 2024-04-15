@@ -180,28 +180,39 @@ def add_cart(request, uid):
 from django.contrib import messages
 
 def cart(request):
-    # Retrieve the cart for the current user
-    cart = Cart.objects.filter(is_paid=False, user=request.user).first()
-    
-    if cart:
-        cart_items = cart.cart_items.all()
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(is_paid=False, user=request.user).first()
+
+        if cart:
+            cart_items = cart.cart_items.all()
+
+        else:
+            messages.warning(request, 'No cart items! Please add some products to cart.')
+            return redirect(reverse('product'))
+
+        if not cart_items:  # If cart_items is empty
+            messages.warning(request, 'No items in the cart.')  # Display a message
+            return redirect(reverse('product'))  # Redirect the user
+        
+
+        
+
+        page = 'Cart | Django'
+        context = {
+            'page': page,
+            'items': cart_items,
+        }
+        return render(request, 'account/cart.html', context=context)
     else:
-        messages.warning(request, 'No cart items! Please add some products to cart.')
-        return redirect(reverse('product'))
+        messages.warning(request, 'Please login or signup first!')
+        return redirect(reverse('login'))
+    
 
-    if not cart_items:  # If cart_items is empty
-        messages.warning(request, 'No items in the cart.')  # Display a message
-        return redirect(reverse('product'))  # Redirect the user
-
-    page = 'Cart | Django'
-    context = {
-        'page': page,
-        'items': cart_items,
-    }
-    return render(request, 'account/cart.html', context=context)
 
 
 def delete(request, uid):
     cart_item = CartItems.objects.get(uid=uid)
     cart_item.delete()
     return redirect(reverse('cart'))
+
+
