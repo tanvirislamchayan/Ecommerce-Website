@@ -16,3 +16,4 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Products, ProductAdmin)
 admin.site.register(SizeVariants)
 admin.site.register(ColorVariants)
+admin.site.register(Coupon)

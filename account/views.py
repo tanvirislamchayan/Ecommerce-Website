@@ -128,7 +128,7 @@ def logout_user(request):
 
 
 def add_cart(request, uid):
-    product = get_object_or_404(Products, uid=uid)
+    product = Products.objects.get(uid=uid)
     
     if request.user.is_authenticated:
         user = request.user
@@ -136,30 +136,13 @@ def add_cart(request, uid):
         size = request.GET.get('size')
         color = request.GET.get('color')
         price = request.GET.get('price')
-        
-        size_variant = None
-        color_variant = None
-        
-        if size is not None:
-            try:
-                size_variant = SizeVariants.objects.get(size_name=size)
-            except SizeVariants.DoesNotExist:
-                pass  # Handle the case where the size variant does not exist
-        
-        if color is not None:
-            try:
-                color_variant = ColorVariants.objects.get(color_name=color)
-            except ColorVariants.DoesNotExist:
-                pass  # Handle the case where the color variant does not exist
-        
-        
 
         cart_item, created = CartItems.objects.get_or_create(
-            cart=cart,
-            product=product,
-            color_variant=color_variant,
-            size_variant=size_variant,
-            item_price=price
+            cart = cart,
+            product = product,
+            item_price = price or 0,
+            color_variant = ColorVariants.objects.filter(color_name = color).first() or None,
+            size_variant = SizeVariants.objects.filter(size_name = size).first() or None,
         )
 
         redirect_url = reverse('detail', kwargs={'slug': product.slug})
@@ -177,7 +160,6 @@ def add_cart(request, uid):
         return redirect(reverse('login'))
 
 
-from django.contrib import messages
 
 def cart(request):
     if request.user.is_authenticated:
