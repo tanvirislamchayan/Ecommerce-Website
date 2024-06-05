@@ -4,3 +4,11 @@
     font-size: 18px;
     padding: 1px;
 }
+
+.totalPrice {
+    background: transparent;
+    font-size: 18px;
+    border: 0;
+    width: 100px;
+    text-align: center;
+}

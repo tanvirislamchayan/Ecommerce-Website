@@ -42,7 +42,7 @@
                       </thead>
                       <tbody>
                         {% for item in items %}
-                        <tr>
+                        <tr data-item-id="{{ item.uid }}">
                           <th class="sr" scope="row">{{ forloop.counter }}</th>
                           <td>
                             <img class="" style="width: 100px;" src="/media/{{ item.product.product_images.first.images }}" alt="Product Image">
@@ -53,47 +53,57 @@
                               <strong>Color: {{ item.color_variant }} </strong> <br>
                             {% endif %}
                             {% if item.size_variant %}
-                              <strong>Size: {{item.size_variant}} </strong>
+                              <strong>Size: {{ item.size_variant }} </strong>
                             {% endif %}
                           </td>
-                          <td class="productPrice"> {{item.item_price}} </td>
-                          <td> 
+                          <td class="productPrice"> {{ item.item_price }} </td>
+                          <td>
                             <div class="d-flex justify-content-center">
                               <div>
-                                <button type="button" class="minus">&minus;</button>
+                                <a href="{% url 'updateCart' item.uid %}?delta=-1">
+                                  <button type="button" class="minus">&minus;</button>
+                                </a>
                               </div>
                               <div>
-                                <input type="text" style="width: 100px; margin-left: 5px; margin-right: 5px; text-align: center; border: 0; border-radius: 10px;" readonly value="1" class="qty">
+                                <input type="text" style="width: 100px; margin-left: 5px; margin-right: 5px; text-align: center; border: 0; border-radius: 10px;" readonly value="{{item.quantity}}" class="qty">
                               </div>
                               <div>
-                                <button type="button" class="plus">&plus;</button>
+                                <a href="{% url 'updateCart' item.uid %}?delta=1">
+                                  <button type="button" class="plus">&plus;</button>
+                                </a>
                               </div>
                             </div>
                           </td>
-                          <td class="totalPrice"> {{item.item_price}} </td>
                           <td>
-                            <a href="{% url 'delete' item.uid %}" class="btn btn-black btn-sm">
+                            <input class="totalPrice" readonly type="text" value="{{ item.total_price }}">
+                          </td>
+                          <td>
+                            <a href="{% url 'delete' item.uid %}?" class="btn btn-black btn-sm">
                               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
                               </svg>
-                          </a>
+                            </a>
                           </td>
                         </tr>
                         {% endfor %}
                       </tbody>
                     </table>
-                    
                   </div>
-                  <button type="submit">Submit</button>
+                  <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                      <div class="mb-3 mb-md-0">
+                        <button id="updateCartButton" style="float: right;" type="button" class="btn btn-black btn-sm btn-block">Update Cart</button>
+                      </div>
+                    </div>
+                  </div>
                 </form>
               </div>
         
               <div class="row">
                 <div class="col-md-6">
                   <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
-                    </div>
+
                     <div class="col-md-6">
                       <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
                     </div>
@@ -124,17 +134,10 @@
                           <span class="text-black">Subtotal</span>
                         </div>
                         <div class="col-md-6 text-right">
-                          <strong class="text-black">$230.00</strong>
+                          <strong class="text-black">${{cart.subTotal}}</strong>
                         </div>
                       </div>
-                      <div class="row mb-5">
-                        <div class="col-md-6">
-                          <span class="text-black">Total</span>
-                        </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black">$230.00</strong>
-                        </div>
-                      </div>
+                      
         
                       <div class="row">
                         <div class="col-md-12">

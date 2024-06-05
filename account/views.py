@@ -136,6 +136,8 @@ def add_cart(request, uid):
         size = request.GET.get('size')
         color = request.GET.get('color')
         price = request.GET.get('price')
+        quantity = 1
+        total_price = price
 
         cart_item, created = CartItems.objects.get_or_create(
             cart = cart,
@@ -143,6 +145,8 @@ def add_cart(request, uid):
             item_price = price or 0,
             color_variant = ColorVariants.objects.filter(color_name = color).first() or None,
             size_variant = SizeVariants.objects.filter(size_name = size).first() or None,
+            quantity = quantity,
+            total_price = total_price
         )
 
         redirect_url = reverse('detail', kwargs={'slug': product.slug})
@@ -183,6 +187,7 @@ def cart(request):
         context = {
             'page': page,
             'items': cart_items,
+            'cart' :cart
         }
         return render(request, 'account/cart.html', context=context)
     else:
@@ -198,3 +203,25 @@ def delete(request, uid):
     return redirect(reverse('cart'))
 
 
+#*Update cart
+def updateCart(request, uid):
+    delta_qty = int(request.GET.get('delta', 0))
+
+    cart_item = get_object_or_404(CartItems, uid=uid)
+    qty = cart_item.quantity
+    print(f'Current quantity: {qty}')
+    item_price = cart_item.item_price
+
+    # Update quantity
+    if qty + delta_qty <= 1:
+        qty = 1
+    else:
+        qty += delta_qty
+
+    print(f'Updated quantity: {qty}')
+
+    # Update the cart item
+    cart_item.quantity = qty
+    cart_item.save()  # This will automatically update the total_price and the cart subtotal
+
+    return redirect(reverse('cart'))

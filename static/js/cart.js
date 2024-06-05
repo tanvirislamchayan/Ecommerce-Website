@@ -25,7 +25,7 @@
         const updatedPrice = qty * unitPrice;
         
         qtyElement.value = qty; // Changed innerText to value
-        document.getElementsByClassName('totalPrice')[index].innerText = updatedPrice.toFixed(2);
+        document.getElementsByClassName('totalPrice')[index].value = updatedPrice.toFixed(2);
     }
 
     window.addEventListener('DOMContentLoaded', function() {
@@ -38,3 +38,17 @@
         }
     });
 })();
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('updateCartButton').addEventListener('click', function() {
+        let uids = [];
+        document.querySelectorAll('tr[data-item-id]').forEach(row => {
+            uids.push(row.getAttribute('data-item-id'));
+        });
+        const baseUrl = "{% url 'updateCart' %}";
+        const url = `${baseUrl}?uids=${uids.join(',')}`;
+        window.location.href = url;
+    });
+});
