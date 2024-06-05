@@ -30,6 +30,7 @@
 
 		var value,
     		quantity = document.getElementsByClassName('quantity-container');
+		var totalContainer = document.getElementsByClassName('totalContainer');
 
 		function createBindings(quantityContainer) {
 	      var quantityAmount = quantityContainer.getElementsByClassName('quantity-amount')[0];
@@ -51,7 +52,7 @@
 	        console.log(quantityAmount, quantityAmount.value);
 
 	        value = isNaN(value) ? 0 : value;
-	        value++;
+	        ++value;
 	        quantityAmount.value = value;
 	    }
 
@@ -59,7 +60,7 @@
 	        value = parseInt(quantityAmount.value, 10);
 
 	        value = isNaN(value) ? 0 : value;
-	        if (value > 0) value--;
+	        if (value > 0) --value;
 
 	        quantityAmount.value = value;
 	    }
