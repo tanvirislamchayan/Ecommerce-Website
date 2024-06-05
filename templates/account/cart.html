@@ -28,69 +28,6 @@
                 <form class="col-md-12" method="post">
                   {% csrf_token %}
                   <div class="site-blocks-table">
-                    <!-- <table class="table">
-                      <thead>
-                        <tr>
-                          <th class="product-thumbnail">Image</th>
-                          <th class="product-name">Product</th>
-                          <th class="product-price">Price</th>
-                          <th class="product-quantity">Quantity</th>
-                          <th class="product-total">Total</th>
-                          <th class="product-remove">Remove</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for item in items %}
-                        <tr>
-
-                          <td class="product-thumbnail">
-                            <img src="/media/{{ item.product.product_images.first.images }}" alt="Image" class="img-fluid">
-                          </td>
-
-                          <td class="product-name">
-                            <h2 class="h5 text-black"> {{ item.product.product_name }} </h2>
-                            {% if item.color_variant %}
-                              <strong>Color: {{ item.color_variant }} </strong> <br>
-                            {% endif %}
-                            {% if item.size_variant %}
-                              <strong>Size: {{item.size_variant}} </strong>
-                            {% endif %}
-                          </td>
-
-                          <td> {{item.item_price}} </td>
-                          <div class="input-group mb-3 d-flex align-items-center quantity-container mx-auto" style="max-width: 120px;">
-                          <td class="">
-                            
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                          </td>
-                          <td>
-                              <p class="totalPrice">
-                                $ {{item.item_price}}
-                              </p>
-                          </td>
-                        </div>
-
-                          <td>
-                              <a href="{% url 'delete' item.uid %}" class="btn btn-black btn-sm">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                                  </svg>
-                              </a>
-                          </td>
-                          
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table> -->
-
                     <table class="table">
                       <thead class="thead-dark">
                         <tr>
