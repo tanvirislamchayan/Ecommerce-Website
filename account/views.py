@@ -126,74 +126,79 @@ def logout_user(request):
     return redirect(reverse('home'))
 
 
-
 def add_cart(request, uid):
-    product = Products.objects.get(uid=uid)
-    
+    product = get_object_or_404(Products, uid=uid)
+
     if request.user.is_authenticated:
         user = request.user
         cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+
         size = request.GET.get('size')
         color = request.GET.get('color')
-        price = request.GET.get('price')
+        price = float(request.GET.get('price', 0))  # Convert price to float
         quantity = 1
-        total_price = price
+        total_price = price * quantity
+
+        color_variant = ColorVariants.objects.filter(color_name=color).first()
+        size_variant = SizeVariants.objects.filter(size_name=size).first()
 
         cart_item, created = CartItems.objects.get_or_create(
-            cart = cart,
-            product = product,
-            item_price = price or 0,
-            color_variant = ColorVariants.objects.filter(color_name = color).first() or None,
-            size_variant = SizeVariants.objects.filter(size_name = size).first() or None,
-            quantity = quantity,
-            total_price = total_price
+            cart=cart,
+            product=product,
+            defaults={
+                'item_price': price,
+                'color_variant': color_variant,
+                'size_variant': size_variant,
+                'quantity': quantity,
+                'total_price': total_price
+            }
         )
 
-        redirect_url = reverse('detail', kwargs={'slug': product.slug})
-        redirect_url += f'?size={size}&color={color}'
+        if not created:
+            # If the item already exists in the cart, update the quantity and total price
+            cart_item.quantity += quantity
+            cart_item.total_price += total_price
+            cart_item.save()
 
-        user_name = request.user.get_full_name() if request.user.is_authenticated else "Guest"
+        user_name = request.user.get_full_name()
         if created:
-            messages.success(request, f'Hello, {user_name}! Your selected Product: {product.product_name}, with Size: {size}, and Color: {color} has been added to the cart successfully!')
+            messages.success(request,
+                             f'Hello, {user_name}! Your selected Product: {product.product_name}, with Size: {size}, and Color: {color} has been added to the cart successfully!')
         else:
-            messages.warning(request, f'Hello, {user_name}! Your selected Product variant already exists in your cart.')
+            messages.warning(request,
+                             f'Hello, {user_name}! Your selected Product variant already exists in your cart. Quantity updated.')
 
+        redirect_url = reverse('detail', kwargs={'slug': product.slug}) + f'?size={size}&color={color}'
         return redirect(redirect_url)
     else:
-        messages.warning(request, f'Invalid User. Please Login or Signup first')
+        messages.warning(request, 'Invalid User. Please Login or Signup first')
         return redirect(reverse('login'))
-
 
 
 def cart(request):
-    if request.user.is_authenticated:
-        cart = Cart.objects.filter(is_paid=False, user=request.user).first()
-
-        if cart:
-            cart_items = cart.cart_items.all()
-
-        else:
-            messages.warning(request, 'No cart items! Please add some products to cart.')
-            return redirect(reverse('product'))
-
-        if not cart_items:  # If cart_items is empty
-            messages.warning(request, 'No items in the cart.')  # Display a message
-            return redirect(reverse('product'))  # Redirect the user
-        
-
-        
-
-        page = 'Cart | Django'
-        context = {
-            'page': page,
-            'items': cart_items,
-            'cart' :cart
-        }
-        return render(request, 'account/cart.html', context=context)
-    else:
+    if not request.user.is_authenticated:
         messages.warning(request, 'Please login or signup first!')
         return redirect(reverse('login'))
-    
+
+    cart = Cart.objects.filter(is_paid=False, user=request.user).first()
+    if not cart:
+        messages.warning(request, 'No cart items! Please add some products to the cart.')
+        return redirect(reverse('product'))
+
+    cart_items = cart.cart_items.all()
+
+    if not cart_items.exists():
+        messages.warning(request, 'No cart items! Please add some products to the cart.')
+        return redirect(reverse('product'))
+
+
+    page = 'Cart | Django'
+    context = {
+        'page': page,
+        'items': cart_items,
+        'cart': cart
+    }
+    return render(request, 'account/cart.html', context=context)
 
 
 
@@ -225,3 +230,34 @@ def updateCart(request, uid):
     cart_item.save()  # This will automatically update the total_price and the cart subtotal
 
     return redirect(reverse('cart'))
+
+
+def applyCoupon(request):
+    coupon_code = request.GET.get('coupon', '').strip()
+
+    if not coupon_code:
+        messages.warning(request, 'No coupon code provided!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon_code).first()
+    if not coupon_obj:
+        messages.warning(request, 'Invalid Coupon! Please try again.')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    cart = Cart.objects.filter(is_paid=False, user=request.user).first()
+    if not cart:
+        messages.warning(request, 'No active cart found!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    if cart.coupon:
+        messages.warning(request, 'Coupon already used!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    if cart.subTotal < coupon_obj.minimum_amount:
+        messages.warning(request, f'Total amount must be greater than {coupon_obj.minimum_amount}!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    cart.subTotal -= coupon_obj.discount_price
+    cart.save()
+    messages.success(request, 'Coupon applied successfully!')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

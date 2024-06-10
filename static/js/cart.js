@@ -1,3 +1,4 @@
+
 (function() {
     const plusButtons = document.getElementsByClassName('plus');
     const minusButtons = document.getElementsByClassName('minus');
@@ -41,14 +42,14 @@
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('updateCartButton').addEventListener('click', function() {
-        let uids = [];
-        document.querySelectorAll('tr[data-item-id]').forEach(row => {
-            uids.push(row.getAttribute('data-item-id'));
-        });
-        const baseUrl = "{% url 'updateCart' %}";
-        const url = `${baseUrl}?uids=${uids.join(',')}`;
-        window.location.href = url;
-    });
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//     document.getElementById('updateCartButton').addEventListener('click', function() {
+//         let uids = [];
+//         document.querySelectorAll('tr[data-item-id]').forEach(row => {
+//             uids.push(row.getAttribute('data-item-id'));
+//         });
+//         const baseUrl = "{% url 'updateCart' %}";
+//         const url = `${baseUrl}?uids=${uids.join(',')}`;
+//         window.location.href = url;
+//     });
+// });

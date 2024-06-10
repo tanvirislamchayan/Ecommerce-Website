@@ -35,11 +35,16 @@ def send_email_verification(sender, instance, created, **kwargs):
 
 class Cart(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
     is_paid = models.BooleanField(default=False)
     subTotal = models.FloatField(default=0, null=True, blank=True)
+    totalQty = models.IntegerField(default=0, null=True, blank=True)
 
     def update_subtotal(self):
         self.subTotal = sum(item.total_price for item in self.cart_items.all())
+        self.save()
+    def update_totalQty(self):
+        self.totalQty = sum(item.quantity for item in self.cart_items.all())
         self.save()
 
 class CartItems(BaseModel):
@@ -47,7 +52,7 @@ class CartItems(BaseModel):
     product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True, blank=True)
     color_variant = models.ForeignKey(ColorVariants, on_delete=models.SET_NULL, null=True, blank=True)
     size_variant = models.ForeignKey(SizeVariants, on_delete=models.SET_NULL, null=True, blank=True)
-    item_price = models.IntegerField(default=0, null=True, blank=True)
+    item_price = models.FloatField(default=0, null=True, blank=True)
     total_price = models.FloatField(default=0, null=True, blank=True)
     quantity = models.IntegerField(default=1, null=True, blank=True)
 
@@ -55,8 +60,10 @@ class CartItems(BaseModel):
         self.total_price = self.quantity * self.item_price
         super().save(*args, **kwargs)
         self.cart.update_subtotal()
-        
+        self.cart.update_totalQty()
+
     def delete(self, *args, **kwargs):
         cart = self.cart
         super().delete(*args, **kwargs)
         cart.update_subtotal()
+        cart.update_totalQty()

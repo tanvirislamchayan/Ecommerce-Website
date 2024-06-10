@@ -1,3 +1,4 @@
+
 from django.urls import path
 from . import views
 
@@ -11,4 +12,5 @@ urlpatterns = [
     path('add-cart/<uuid:uid>', views.add_cart, name='add_cart'),
     path('delete-cart-itrm/<uuid:uid>/', views.delete, name='delete'),
     path('update-cart/<uuid:uid>', views.updateCart, name='updateCart'),  # Updated pattern
+    path('update-cart/apply-coupon', views.applyCoupon, name='applyCoupon'),  # Updated pattern
 ]

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import *
 from django.http import HttpResponse
+from account.models import Cart, CartItems
 
 
 def product(request):
@@ -13,7 +14,8 @@ def product(request):
     page = 'Shop | Django e-Com'
     context = {
         'page': page,
-        'products':products
+        'products':products,
+        'products':products,
     }
     return render(request, 'product/product.html', context=context)
 
@@ -24,9 +26,17 @@ def product(request):
 
 
 def checkout(request):
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(is_paid=False, user=request.user).first()
+        
+        if cart:
+            cart_items = cart.cart_items.all()
+            
     page = 'Checkout | Django'
     context = {
-        'page': page
+        'page': page,
+        'cart': cart,
+        'items': cart_items,
     }
     return render(request, 'product/checkout.html', context)
 
