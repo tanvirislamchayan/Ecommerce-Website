@@ -1,6 +1,9 @@
 from django.db import models
 from base.models import BaseModel #Imported the base model just created on base app it 
 from django.utils.text import slugify #It will be used to generate slug
+from django.utils import timezone
+from datetime import timedelta
+
 
 
 
@@ -112,3 +115,12 @@ class Coupon(BaseModel):
     is_expire = models.BooleanField(default=False)
     discount_price = models.IntegerField(default=100)
     minimum_amount = models.IntegerField(default = 500)
+    expiry_date = models.DateTimeField( null=True, blank=True)
+    time_delta = models.IntegerField(null=True, blank=True)
+
+    def is_valid(self):
+        return self.expiry_date > timezone.now()
+
+    def __str__(self):
+        return self.coupon_code
+

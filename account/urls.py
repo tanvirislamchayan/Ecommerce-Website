@@ -13,4 +13,5 @@ urlpatterns = [
     path('delete-cart-itrm/<uuid:uid>/', views.delete, name='delete'),
     path('update-cart/<uuid:uid>', views.updateCart, name='updateCart'),  # Updated pattern
     path('update-cart/apply-coupon', views.applyCoupon, name='applyCoupon'),  # Updated pattern
+    path('minute-change/', views.minute_change, name='minute_change'),
 ]

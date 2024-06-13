@@ -92,6 +92,13 @@
                   </a>
               </li>
           </ul>
+            <ul class="custom-navbar-nav navbar-nav mb-2 mb-md-0 ms-5">
+                <li class="nav-item">
+                    <div id="clock" style="color:white;font-size:18px;">
+
+                    </div>
+                </li>
+            </ul>
       </div>
       
 				
@@ -238,6 +245,22 @@
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/tiny-slider.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
+    <script>
+        function updateClock() {
+    const clockElement = document.getElementById('clock');
+    const now = new Date();
+
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    clockElement.textContent = timeString;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+    </script>
 </body>
 
 </html>

@@ -9,6 +9,10 @@ from .models import *
 from product.models import *
 from django.contrib.auth import authenticate, login as auth_login  # Renamed login function
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 
@@ -244,6 +248,11 @@ def applyCoupon(request):
         messages.warning(request, 'Invalid Coupon! Please try again.')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+    # Handle the case where coupon_obj is None before comparing expiry date
+    if coupon_obj.expiry_date and coupon_obj.expiry_date < timezone.now():
+        messages.warning(request, 'Your Coupon is expired.')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
     cart = Cart.objects.filter(is_paid=False, user=request.user).first()
     if not cart:
         messages.warning(request, 'No active cart found!')
@@ -257,7 +266,28 @@ def applyCoupon(request):
         messages.warning(request, f'Total amount must be greater than {coupon_obj.minimum_amount}!')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-    cart.subTotal -= coupon_obj.discount_price
-    cart.save()
+    if not cart.coupon:
+        cart.subTotal -= coupon_obj.discount_price
+        cart.coupon = coupon_obj
+        cart.save()
+
     messages.success(request, 'Coupon applied successfully!')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@csrf_exempt
+def minute_change(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        minute = data.get('minute')
+
+        # Your Python function logic here
+        print(f'Minute changed: {minute}')
+    return redirect(reverse('cart'))
+
+    #     response_data = {
+    #         'message': 'Minute change processed successfully!',
+    #         'minute': minute
+    #     }
+    #     return JsonResponse(response_data)
+    # return JsonResponse({'error': 'Invalid request method'}, status=400)
